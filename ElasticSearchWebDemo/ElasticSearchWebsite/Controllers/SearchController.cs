@@ -6,26 +6,34 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ElasticSearchWebsite.Models;
+using Nest;
+using DataAccess.Models;
 
 namespace ElasticSearchWebsite.Controllers
 {
-    public class HomeController : Controller
+    public class SearchController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IElasticClient _client;
 
-        public HomeController(ILogger<HomeController> logger)
+        public SearchController(IElasticClient client)
         {
-            _logger = logger;
+            _client = client;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index(SearchForm form)
         {
-            return View();
-        }
+            var result = _client.Search<Movie>(s => s
+                .Size(25));
 
-        public IActionResult Privacy()
-        {
-            return View();
+            var model = new SearchViewModel 
+            {
+                Hits = result.Hits,
+                Total = result.Total,
+                Form = form
+            };
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

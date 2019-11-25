@@ -12,30 +12,41 @@ namespace ElasticIndexer
     {
         private static ElasticClient Client { get; set; }
         private static MovieDumpReader DumpReader { get; set; }
+        private static string CurrentIndexName { get; set; }
 
         static void Main(string[] args)
         {
             Client = SearchConfiguration.GetClient();
             DumpReader = new MovieDumpReader();
+            CurrentIndexName = SearchConfiguration.CreateIndexName();
 
-            DeleteIndexIfExists();
             CreateIndex();
             IndexDumps();
+            SwapAlias();
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
         }
 
-        static void DeleteIndexIfExists()
+        static void CreateIndex()
         {
-            if (Client.IndexExists("movie").Exists)
-                Client.DeleteIndex("movie");
-
-            if (Client.IndexExists("actor").Exists)
-                Client.DeleteIndex("actor");
-
-            if (Client.IndexExists("movieindex").Exists)
-                Client.DeleteIndex("movieindex");
+            Client.CreateIndex(CurrentIndexName, i => i
+                .Settings(s => s
+                    .NumberOfShards(2)
+                    .NumberOfReplicas(0)
+                    )
+                .Mappings(m => m
+                    .Map<Movie>(map => map
+                        .AutoMap()
+                        .Properties(ps => ps
+                            .Nested<Actor>(n => n
+                                .Name(p => p.Cast.First())
+                                .AutoMap()
+                                )
+                            )
+                        )
+                    )
+                );
         }
 
         static void IndexDumps()
@@ -46,6 +57,7 @@ namespace ElasticIndexer
             var waitHandle = new CountdownEvent(1);
 
             var bulkAll = Client.BulkAll(movies, b => b
+                .Index(CurrentIndexName)
                 .BackOffRetries(2)
                 .BackOffTime("30s")
                 .RefreshOnCompleted(true)
@@ -64,25 +76,26 @@ namespace ElasticIndexer
             Console.WriteLine("Done.");
         }
 
-        static void CreateIndex()
+        private static void SwapAlias()
         {
-            Client.CreateIndex("movieindex", i => i
-                .Settings(s => s
-                    .NumberOfShards(2)
-                    .NumberOfReplicas(0)
-                    )
-                .Mappings(m => m
-                    .Map<Movie>(map => map
-                        .AutoMap()
-                        .Properties(ps => ps
-                            .Nested<Actor>(n => n
-                                .Name(p => p.Cast.First())
-                                .AutoMap()
-                                )
-                            )
-                        )
-                    )
-                );
+            var indexExists = Client.IndexExists(SearchConfiguration.LiveIndexAlias).Exists;
+
+            Client.Alias(aliases =>
+            {
+                if (indexExists)
+                    aliases.Add(a => a.Alias(SearchConfiguration.OldIndexAlias).Index(Client.GetIndicesPointingToAlias(SearchConfiguration.LiveIndexAlias).First()));
+
+                return aliases
+                    .Remove(a => a.Alias(SearchConfiguration.LiveIndexAlias).Index("*"))
+                    .Add(a => a.Alias(SearchConfiguration.LiveIndexAlias).Index(CurrentIndexName));
+            });
+
+            var oldIndices = Client.GetIndicesPointingToAlias(SearchConfiguration.OldIndexAlias)
+                .OrderByDescending(name => name)
+                .Skip(2);
+
+            foreach (var oldIndex in oldIndices)
+                Client.DeleteIndex(oldIndex);
         }
     }
 }
