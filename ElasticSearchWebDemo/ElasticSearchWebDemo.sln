@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDataConsumer", "Sampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{75642FDA-13B1-4AE8-92DE-061012FBFB41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticIndexer", "ElasticIndexer\ElasticIndexer.csproj", "{77AE0499-C5F5-4639-A2A2-CA8E5151D04F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{75642FDA-13B1-4AE8-92DE-061012FBFB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75642FDA-13B1-4AE8-92DE-061012FBFB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75642FDA-13B1-4AE8-92DE-061012FBFB41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77AE0499-C5F5-4639-A2A2-CA8E5151D04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77AE0499-C5F5-4639-A2A2-CA8E5151D04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77AE0499-C5F5-4639-A2A2-CA8E5151D04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77AE0499-C5F5-4639-A2A2-CA8E5151D04F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
