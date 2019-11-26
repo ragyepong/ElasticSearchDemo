@@ -70,6 +70,10 @@ namespace ElasticSearchWebsite.Models
             return clone.ToQueryString();
         }
 
-        public string UrlFor(Movie movie) => $"https://www.wikipedia.com/{movie.Title}";
+        public string UrlFor(Movie movie) 
+        {
+            string queryStyledTitle = movie.Title.Replace(" ", "+");
+            return $"https://www.google.com/search?q={queryStyledTitle}";
+        }
     }
 }
