@@ -24,7 +24,35 @@ namespace ElasticSearchWebsite.Controllers
         public IActionResult Index(SearchForm form)
         {
             var result = _client.Search<Movie>(s => s
-                .Size(25));
+                .Size(25)
+                .Query(q => q
+                    .Match(m => m
+                        .Field(p => p.Title.Suffix("keyword"))
+                        .Boost(1000)
+                        .Query(form.Query)
+                        ) || q
+                    .FunctionScore(fs => fs
+                        .MaxBoost(50)
+                        .Functions(ff => ff
+                            .FieldValueFactor(fvf => fvf
+                                .Field(p => p.Rating)
+                                .Factor(0.0001)
+                                )
+                            )
+                        .Query(query => query
+                            .MultiMatch(m => m
+                                .Fields(f => f
+                                    .Field(p => p.Title, 1.5) 
+                                    .Field(p => p.Summary, 0.8)
+                                    .Field(p => p.Genres, 0.5)
+                                    )
+                                .Operator(Operator.And)
+                                .Query(form.Query)
+                                )
+                            )
+                        )
+                    )
+                );
 
             var model = new SearchViewModel 
             {

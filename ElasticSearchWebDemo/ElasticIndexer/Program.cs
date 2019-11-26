@@ -34,11 +34,50 @@ namespace ElasticIndexer
                 .Settings(s => s
                     .NumberOfShards(2)
                     .NumberOfReplicas(0)
+                    .Analysis(analysis => analysis
+                        .Tokenizers(tokenizers => tokenizers
+                            .Pattern("movie-title-tokenizer", p => p.Pattern(@"\W+"))
+                            )
+                        .TokenFilters(tokenfilters => tokenfilters
+                            .WordDelimiter("movie-title-words", w => w
+                                .SplitOnCaseChange()
+                                .PreserveOriginal()
+                                .SplitOnNumerics()
+                                .GenerateNumberParts()
+                                .GenerateWordParts()
+                                )
+                            .Stemmer("movier-title-stemmer", s => s
+                                .Language("english")
+                                )
+                            )
+                        .Analyzers(analyzers => analyzers
+                            .Custom("movie-title-analyzer", c=> c
+                                .Tokenizer("movie-title-tokenizer")
+                                .Filters("movie-title-words", "lowercase")
+                                )
+                            .Custom("movie-title-keyword", c => c
+                                .Tokenizer("keyword")
+                                .Filters("lowercase")
+                                )
+                            .Custom("movie-title-stemmed", c => c
+                                .Tokenizer("standard")
+                                .Filters("movier-title-stemmer", "lowercase"))
+                            )
+                        )
                     )
                 .Mappings(m => m
                     .Map<Movie>(map => map
                         .AutoMap()
                         .Properties(ps => ps
+                            .Text(s => s
+                                .Name(p => p.Title)
+                                .Analyzer("movie-title-analyzer")
+                                .Fields(f => f
+                                    .Text(p => p.Name("keyword").Analyzer("movie-title-keyword"))
+                                    .Text(p => p.Name("keyword").Analyzer("movie-title-stemmed"))
+                                    .Keyword(p => p.Name("raw"))
+                                    )
+                                )
                             .Nested<Actor>(n => n
                                 .Name(p => p.Cast.First())
                                 .AutoMap()
