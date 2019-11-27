@@ -2,6 +2,8 @@
 @{
     var sort = Model.Sort;
 }
-<select name="@Html.NameFor(m => m.Sort).ToLowerInvariant()" class="label label-select">
-    
-</select>
+    <select name="@Html.NameFor(m => m.Sort).ToLowerInvariant()" class="label label-select">
+        <option value="relevance" selected="@(sort == SearchSort.Relevance ? true : false )">Relevance</option>
+        <option value="rating" selected="@(sort == SearchSort.Rating ? true : false )">Rating</option>
+        <option value="recent" selected="@(sort == SearchSort.Recent ? true : false )">Recency</option>
+    </select>

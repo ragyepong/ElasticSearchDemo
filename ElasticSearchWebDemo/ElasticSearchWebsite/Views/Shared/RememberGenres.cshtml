@@ -1,0 +1,7 @@
+﻿@using ElasticSearchWebsite.Models
+@model SearchForm
+
+@if (!string.IsNullOrEmpty(Model.Genre))
+{
+    <input name="@Html.NameFor(m=>m.Genre).ToLowerInvariant()" type="hidden" value="@Model.Genre" />
+}

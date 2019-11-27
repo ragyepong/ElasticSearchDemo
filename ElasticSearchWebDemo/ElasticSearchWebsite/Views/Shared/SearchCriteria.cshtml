@@ -1,5 +1,5 @@
 ﻿@model SearchViewModel
-@* @Html.Partial("ControlHits", Model) *@
+@Html.Partial("ControlHits", Model)
 <h2>
     <span class="text-success">Found <span class="label label-success">@Model.Total</span> movies</span>
     @if (!string.IsNullOrEmpty(Model.Form.Query))
@@ -9,11 +9,11 @@
             <span class="label label-primary">"@Model.Form.Query" <a class="glyphicon glyphicon-remove" href="@Model.UrlForFirstPage(f=> { f.Query = null; })"></a></span>
         </span>
     }
-    @if (!string.IsNullOrEmpty(Model.Form.Author))
+    @if (!string.IsNullOrEmpty(Model.Form.Genre))
     {
         <span class="text-warning">
-            having an <span class="label label-info">Author</span> named
-            <a class="label label-warning" href="@Model.UrlForFirstPage(f => { f.Author = null; })">@Model.Form.Author <span class="glyphicon glyphicon-remove"></span></a>
+            having the <span class="label label-info">Genres</span> named
+            <a class="label label-warning" href="@Model.UrlForFirstPage(f => { f.Genre = null; })">@Model.Form.Genre <span class="glyphicon glyphicon-remove"></span></a>
         </span>
     }
     @if (Model.Form.Tags != null && Model.Form.Tags.Length > 0)

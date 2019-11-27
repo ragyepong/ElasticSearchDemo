@@ -78,10 +78,15 @@ namespace ElasticIndexer
                                     .Keyword(p => p.Name("raw"))
                                     )
                                 )
+                            .Text(s => s
+                                .Name(p => p.Genres)
+                                .Fielddata())
                             .Nested<Actor>(n => n
                                 .Name(p => p.Cast.First())
                                 .AutoMap()
                                 )
+                            .Completion(c => c
+                                .Name(p => p.TitleSuggest))
                             )
                         )
                     )

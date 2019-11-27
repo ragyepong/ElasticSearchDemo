@@ -24,7 +24,7 @@ namespace ElasticSearchWebsite.Extensions
         {
             //		public int Page { get; set; }
             //		public string Query { get; set; }
-            //		public string Author { get; set; }
+            //		public string Genre { get; set; }
             //		public string[] Tags { get; set; }
             //		public int PageSize { get; set; }
             //		public SearchSort Sort { get; set; }
@@ -38,7 +38,7 @@ namespace ElasticSearchWebsite.Extensions
                 properties.Add($"sort={u(form.Sort.ToString().ToLowerInvariant())}");
             if (form.Significance) properties.Add($"significance={form.Significance.ToString().ToLowerInvariant()}");
             if (!string.IsNullOrEmpty(form.Query)) properties.Add($"query={u(form.Query)}");
-            if (!string.IsNullOrEmpty(form.Author)) properties.Add($"author={u(form.Author)}");
+            if (!string.IsNullOrEmpty(form.Genre)) properties.Add($"genre={u(form.Genre)}");
             if (form.Tags != null && form.Tags.Length > 0)
                 properties.AddRange(form.Tags.Select(t => $"tags={u(t)}"));
 

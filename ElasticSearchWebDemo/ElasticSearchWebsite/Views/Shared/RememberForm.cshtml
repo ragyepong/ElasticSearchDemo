@@ -1,7 +1,7 @@
 ﻿@using ElasticSearchWebsite.Models
 @model SearchForm
 
-@Html.Partial("RememberAuthor", Model)
+@Html.Partial("RememberGenres", Model)
 @if (Model.PageSize != SearchForm.DefaultPageSize)
 {
     <input name="@Html.NameFor(m=>m.PageSize).ToLowerInvariant()" type="hidden" value="@Model.PageSize" />

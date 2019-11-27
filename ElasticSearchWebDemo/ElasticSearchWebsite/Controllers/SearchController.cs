@@ -24,7 +24,8 @@ namespace ElasticSearchWebsite.Controllers
         public IActionResult Index(SearchForm form)
         {
             var result = _client.Search<Movie>(s => s
-                .Size(25)
+                .From((form.Page - 1) * form.PageSize)
+                .Size(form.PageSize)
                 .Query(q => q
                     .Match(m => m
                         .Field(p => p.Title.Suffix("keyword"))
@@ -36,7 +37,7 @@ namespace ElasticSearchWebsite.Controllers
                         .Functions(ff => ff
                             .FieldValueFactor(fvf => fvf
                                 .Field(p => p.Rating)
-                                .Factor(0.0001)
+                                .Factor(2)
                                 )
                             )
                         .Query(query => query
@@ -50,15 +51,38 @@ namespace ElasticSearchWebsite.Controllers
                                 .Query(form.Query)
                                 )
                             )
+                        ) && +q.Term(p => p
+                                .Field(f => f.Genres)
+                                .Value(form.Genre)
+                                )
+                    ) 
+                .Sort(sort => 
+                    {
+                        if (form.Sort == SearchSort.Rating)
+                            return sort.Descending(p => p.Rating);
+                        if (form.Sort == SearchSort.Recent)
+                            return sort.Descending(p => p.AirDate.Suffix("keyword"));
+
+                        return sort.Descending(SortSpecialField.Score);
+                    })
+                .Aggregations(a => a
+                    .Terms("genres", ts => ts
+                        .Field(p => p.Genres)
                         )
                     )
                 );
+
+            var genres = result.Aggregations.Terms("genres")
+                            .Buckets
+                            .ToDictionary(k => k.Key, v => v.DocCount);
 
             var model = new SearchViewModel 
             {
                 Hits = result.Hits,
                 Total = result.Total,
-                Form = form
+                Form = form,
+                TotalPages = (int)Math.Ceiling(result.Total / (double)form.PageSize),
+                Genres = genres
             };
 
             return View(model);

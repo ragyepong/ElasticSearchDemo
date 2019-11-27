@@ -40,9 +40,9 @@ namespace ElasticSearchWebsite.Models
         public int ElapsedMilliseconds { get; set; }
 
         /// <summary>
-        /// Returns the top authors with the most packages
+        /// Returns the top genres with the most packages
         /// </summary>
-        public Dictionary<string, long?> Authors { get; set; }
+        public Dictionary<string, long?> Genres { get; set; }
 
         /// <summary>
         /// Returns the top tags for the current search
@@ -53,7 +53,7 @@ namespace ElasticSearchWebsite.Models
         {
             this.Hits = EmptyHits;
             this.Form = new SearchForm();
-            this.Authors = new Dictionary<string, long?>();
+            this.Genres = new Dictionary<string, long?>();
             this.Tags = new Dictionary<string, long>();
         }
 

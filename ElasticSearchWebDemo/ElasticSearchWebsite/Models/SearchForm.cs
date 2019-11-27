@@ -5,7 +5,7 @@ namespace ElasticSearchWebsite.Models
     public enum SearchSort
     {
         Relevance,
-        Downloads,
+        Rating,
         Recent
     }
 
@@ -18,7 +18,7 @@ namespace ElasticSearchWebsite.Models
         public int Page { get; set; }
         public bool Significance { get; set; }
         public string Query { get; set; }
-        public string Author { get; set; }
+        public string Genre { get; set; }
         public string[] Tags { get; set; }
         public int PageSize { get; set; }
         public SearchSort Sort { get; set; }
@@ -36,7 +36,7 @@ namespace ElasticSearchWebsite.Models
             Page = this.Page,
             Significance = this.Significance,
             Query = this.Query,
-            Author = this.Author,
+            Genre = this.Genre,
             Tags = this.Tags,
             PageSize = this.PageSize,
             Sort = this.Sort,

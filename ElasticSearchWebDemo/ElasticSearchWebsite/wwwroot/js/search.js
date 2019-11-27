@@ -4,7 +4,7 @@
     $("input[type='checkbox']").change(function () { $("form#search-criteria").submit(); });
     $(".timeago").timeago();
 
-    //setupTypeAhead();
+    setupTypeAhead();
 
     function setupTypeAhead() {
         var typeAheadOptions = {
@@ -28,7 +28,7 @@
 
         $('#query').typeahead(typeAheadOptions,
             {
-                displayKey: "id",
+                displayKey: "title",
                 templates: {
                     empty: [
                         '<div class="lead">',
@@ -38,9 +38,9 @@
                     suggestion: function (suggestion) {
                         return [
                             '<h4 class="text-primary">',
-                            suggestion.id,
+                            suggestion.title,
                             '<span class="text-humble pull-right">',
-                            suggestion.downloadCount + " downloads",
+                            suggestion.rating + " score",
                             '</span>',
                             '</h5>',
                             '<h5 class="text-primary">',
@@ -52,7 +52,8 @@
                 source: remoteHandler
             }
         ).on('typeahead:selected', function (e, o) {
-            window.location.href = "https://www.nuget.org/packages/" + o.id;
+            var queryStyledTitle = o.title.replace(" ", "+");
+            window.location.href = "https://www.google.com/search?q=" + queryStyledTitle;
         })
             .on('typeahead:selected', function (e, o) {
                 $("#query").focus().select();

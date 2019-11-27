@@ -1,7 +1,7 @@
 ﻿@using ElasticSearchWebsite.Models
 @model SearchForm
 
-<div class="input-group">
+<div class="input-group col-md-12">
     <input type="text" id="query" name="@Html.NameFor(m=>m.Query).ToLowerInvariant()" value="@Model.Query"
            autocomplete="off" class="form-control" placeholder="Search for movies ..." />
     <div class="input-group-btn">

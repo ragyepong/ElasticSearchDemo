@@ -2,6 +2,9 @@
 @{
     var pageSize = Model.PageSize;
 }
-<select name="@Html.NameFor(m => m.PageSize).ToLowerInvariant()" class="label label-select">
-
-</select>
+    <select name="@Html.NameFor(m => m.PageSize).ToLowerInvariant()" class="label label-select">
+        <option selected="@(pageSize == 10 ? true : false )">10</option>
+        <option selected="@(pageSize == 25 ? true : false )">25</option>
+        <option selected="@(pageSize == 50 ? true : false )">50</option>
+        <option selected="@(pageSize == 100 ? true : false )">100</option>
+    </select>

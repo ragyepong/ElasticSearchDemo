@@ -1,13 +1,13 @@
 ﻿@model SearchViewModel
 <div class="panel panel-info aggregation-container">
     <div class="panel-heading">
-        <h3 class="panel-title">Authors</h3>
+        <h3 class="panel-title">Genres</h3>
     </div>
     <div class="panel-body list-group">
-        @foreach (var author in Model.Authors)
+        @foreach (var genre in Model.Genres)
         {
-            var isSelected = Model.Form.Author == author.Key;
-            var url = Model.UrlForFirstPage(f => { f.Author = isSelected ? "" : author.Key; });
+            var isSelected = Model.Form.Genre == genre.Key;
+            var url = Model.UrlForFirstPage(f => { f.Genre = isSelected ? "" : genre.Key; });
             <a href="@url" class="list-group-item @(isSelected ? "list-group-item-warning" : "")">
                 @if (isSelected)
                 {
@@ -15,9 +15,9 @@
                 }
                 else
                 {
-                    <span class="label label-lg label-warning pull-right">@author.Value</span>
+                    <span class="label label-lg label-warning pull-right">@genre.Value</span>
                 }
-                @author.Key
+                @genre.Key
             </a>
         }
     </div>
