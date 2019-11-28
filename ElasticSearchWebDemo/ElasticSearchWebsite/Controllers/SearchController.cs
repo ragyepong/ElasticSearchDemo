@@ -31,6 +31,7 @@ namespace ElasticSearchWebsite.Controllers
                         .Field(p => p.Title.Suffix("keyword"))
                         .Boost(1000)
                         .Query(form.Query)
+                        .Fuzziness(Fuzziness.EditDistance(2))
                         ) || q
                     .FunctionScore(fs => fs
                         .MaxBoost(50)

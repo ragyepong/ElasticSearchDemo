@@ -33,7 +33,16 @@ namespace DataAccess.Models
             set 
             {
                 _rating = value;
-                TitleSuggest.Weight = (int)value;
+                if (TitleSuggest != null)
+                    TitleSuggest.Weight = (int)value;
+                else
+                {
+                    TitleSuggest = new CompletionField
+                    {
+                        Weight = Rating != null ? (int?)Rating : null
+                    };
+                }
+
             } 
         
         }
